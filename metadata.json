@@ -1,0 +1,6 @@
+{
+  "name": "AdCraft Studio — AI Banner Ad Generator",
+  "description": "Generate high-impact banner ads in all standard sizes from any product description or URL with AI studio imagery and multi-format exports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

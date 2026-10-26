@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light dark"/>
+<link rel="icon" href="data:,"/>
+<title>CampusEvents — College Event Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Public+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f6f1; --surface:#ffffff; --surface2:#eef2ea; --text:#14201c; --muted:#5b6b64; --line:#dde5dc;
+  --teal:#0f766e; --teal-dark:#0b5e57; --amber:#f59e0b; --amber-bg:#fff7e0; --red:#dc2626; --green:#15803d;
+  --radius:18px; --shadow:0 10px 30px rgba(15,40,35,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#0c1411; --surface:#14201c; --surface2:#1a2a24; --text:#eef6f1; --muted:#a8bcb2; --line:#24362e; --teal:#2dd4bf; --teal-dark:#5eead4; --shadow:0 10px 30px rgba(0,0,0,.35); }
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Public Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+a{color:inherit}
+.topbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1180px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:42px;height:42px;border-radius:12px;background:var(--teal);color:#fff;display:grid;place-items:center;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:20px;letter-spacing:-.02em}
+.brand h1{font-family:"Bricolage Grotesque",sans-serif;font-size:20px;line-height:1;margin:0;letter-spacing:-.02em}
+.brand p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+.nav{display:flex;gap:8px;background:var(--surface);border:1px solid var(--line);padding:5px;border-radius:999px}
+.nav button{border:0;background:transparent;padding:9px 14px;border-radius:999px;font-weight:700;font-size:14px;cursor:pointer;color:var(--muted)}
+.nav button.active{background:var(--teal);color:#fff}
+.nav button span.badge{background:#fff;color:var(--teal);border-radius:999px;padding:1px 7px;font-size:12px;margin-left:4px}
+.hero{max-width:1180px;margin:0 auto;padding:28px 18px 8px}
+.hero-grid{display:grid;grid-template-columns:1.4fr .9fr;gap:18px}
+@media(max-width:820px){.hero-grid{grid-template-columns:1fr}}
+.hero-card{background:var(--teal);color:#fff;border-radius:24px;padding:26px 26px 22px;overflow:hidden;position:relative}
+.hero-card h2{font-family:"Bricolage Grotesque",sans-serif;font-size:38px;line-height:.95;letter-spacing:-.03em;margin:0 0 10px;max-width:520px}
+.hero-card p{margin:0;opacity:.9;max-width:520px;font-size:15.5px}
+.hero-card::after{content:"";position:absolute;right:-30px;bottom:-50px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.14)}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr 1fr}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}
+.stat b{font-family:"Bricolage Grotesque",sans-serif;font-size:30px;line-height:1;display:block}
+.stat span{font-size:12.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.controls{max-width:1180px;margin:0 auto;padding:18px}
+.searchrow{display:flex;gap:10px;flex-wrap:wrap}
+.searchbox{flex:1;min-width:220px;display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 6px 6px 16px}
+.searchbox input{flex:1;border:0;outline:0;background:transparent;font-size:15px;color:var(--text);padding:10px 0}
+.searchbox button{background:var(--text);color:var(--bg);border:0;padding:10px 16px;border-radius:999px;font-weight:700;cursor:pointer}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pill{border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:999px;font-weight:700;font-size:13.5px;cursor:pointer}
+.pill.active{background:var(--amber);border-color:var(--amber);color:#231a00}
+.wrap{max-width:1180px;margin:0 auto;padding:6px 18px 40px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:980px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column}
+.card-top{padding:16px 16px 0;display:flex;justify-content:space-between;gap:10px}
+.badge{font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:6px 9px;border-radius:999px;background:var(--surface2)}
+.badge.free{background:#dcfce7;color:#14532d}.badge.paid{background:var(--amber-bg);color:#92400e}
+.datebox{text-align:center;background:var(--surface2);border-radius:12px;padding:8px 10px;min-width:58px}
+.datebox b{display:block;font-size:20px;line-height:1;font-family:"Bricolage Grotesque",sans-serif}
+.datebox span{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card-body h3{margin:0;font-size:19px;line-height:1.2;letter-spacing:-.02em}
+.club{font-weight:700;color:var(--teal);font-size:13.5px}
+.desc{color:var(--muted);font-size:14px;margin:0}
+.meta{font-size:13.5px;display:grid;gap:4px}
+.meta span{display:flex;gap:8px}
+.progress{height:8px;background:var(--surface2);border-radius:999px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--teal)}
+.seatsline{display:flex;justify-content:space-between;font-size:13px;font-weight:600}
+.card-foot{padding:0 16px 16px;display:flex;gap:10px;align-items:center}
+.price{font-weight:800;font-size:17px}
+.btn{border:0;cursor:pointer;font-weight:800;border-radius:999px;padding:11px 16px;font-size:14px}
+.btn-primary{background:var(--teal);color:#fff;flex:1}
+.btn-primary:disabled{background:#9ca3af;cursor:not-allowed}
+.btn-outline{background:transparent;border:1px solid var(--line);color:var(--text)}
+.btn-danger{background:#fee2e2;color:#991b1b}
+.cancelledTag{color:var(--red);font-weight:800}
+.empty{background:var(--surface);border:1.5px dashed var(--line);border-radius:18px;padding:28px;text-align:center;color:var(--muted)}
+.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:16px;margin:8px 0 16px;flex-wrap:wrap}
+.sectionhead h2{font-family:"Bricolage Grotesque",sans-serif;font-size:28px;margin:0;letter-spacing:-.02em}
+.sectionhead p{margin:4px 0 0;color:var(--muted)}
+.tablewrap{background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{padding:13px 14px;text-align:left;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface2)}
+.regcard{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.regcard h3{margin:0 0 4px}
+.pillid{display:inline-block;background:var(--surface2);padding:4px 9px;border-radius:999px;font-weight:800;font-size:12.5px}
+.formcard{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.formgrid{grid-template-columns:1fr}}
+label{font-size:13px;font-weight:700;display:block;margin-bottom:6px}
+input,select,textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--text);font-size:15px;outline:none}
+input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 3px color-mix(in srgb, var(--teal) 18%, transparent)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;place-items:center;padding:16px;z-index:80}
+.modal.open{display:grid}
+.modalbox{background:var(--surface);width:100%;max-width:560px;border-radius:22px;padding:22px;max-height:92vh;overflow:auto}
+.error{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:600;display:none}
+.error.show{display:block}
+.success{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d;padding:12px 14px;border-radius:12px;font-size:14px;font-weight:600;display:none}
+.success.show{display:block}
+.toast{position:fixed;left:50%;transform:translateX(-50%) translateY(20px);bottom:20px;background:#111827;color:#fff;padding:13px 18px;border-radius:999px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:100;max-width:92vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.footer{max-width:1180px;margin:0 auto;padding:10px 18px 30px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+@media(max-width:820px){#adminGrid{grid-template-columns:1fr!important}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><div class="mark">CE</div><div><h1>CampusEvents</h1><p>College Event Management System</p></div></div>
+    <nav class="nav" aria-label="Main">
+      <button id="tabEvents" class="active" data-view="events">Events</button>
+      <button id="tabMy" data-view="my">My Registrations <span class="badge" id="myBadge">0</span></button>
+      <button id="tabAdmin" data-view="admin">Organizer</button>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-card">
+      <h2>One place for every college event.</h2>
+      <p>Browse fests, workshops, sports and seminars — check seats, register in seconds, and keep your Registration ID safe. Organizers manage everything from one dashboard.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="statEvents">0</b><span>Total Events</span></div>
+      <div class="stat"><b id="statRegs">0</b><span>Registrations</span></div>
+      <div class="stat"><b id="statSeats">0</b><span>Seats Booked</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS VIEW -->
+<div id="view-events">
+  <div class="controls">
+    <div class="searchrow">
+      <div class="searchbox">
+        <span aria-hidden="true">🔍</span>
+        <input id="searchInput" type="search" placeholder="Search by event name or club — try &quot;hack&quot; or &quot;Robotics&quot;"/>
+        <button id="searchBtn" type="button">Search</button>
+      </div>
+    </div>
+    <div class="pills" id="catPills">
+      <button class="pill active" data-cat="All">All Events</button>
+      <button class="pill" data-cat="Technical">Technical</button>
+      <button class="pill" data-cat="Cultural">Cultural</button>
+      <button class="pill" data-cat="Sports">Sports</button>
+      <button class="pill" data-cat="Workshop">Workshop</button>
+      <button class="pill" data-cat="Seminar">Seminar</button>
+      <button class="pill" data-cat="Fest">Fest</button>
+    </div>
+  </div>
+  <main class="wrap">
+    <div id="eventsGrid" class="grid"></div>
+    <div id="noResults" class="empty hidden"><strong>No events found.</strong><br>Try a different search word or choose another category.</div>
+  </main>
+</div>
+
+<!-- MY REGISTRATIONS -->
+<div id="view-my" class="hidden">
+  <main class="wrap">
+    <div class="sectionhead"><div><h2>My Registrations</h2><p>Your booked events in this browser. Show your Registration ID at the venue entry.</p></div><button class="btn btn-outline" data-view="events">← Browse more events</button></div>
+    <div id="myList"></div>
+    <div id="myEmpty" class="empty">You have not registered for any event yet.<br><br><button class="btn btn-primary" style="max-width:240px" data-view="events">Explore Events</button></div>
+  </main>
+</div>
+
+<!-- ADMIN -->
+<div id="view-admin" class="hidden">
+  <main class="wrap">
+    <div class="sectionhead"><div><h2>Organizer Dashboard</h2><p>See all registrations, create a new event, or cancel an event.</p></div><button class="btn btn-danger" id="clearBtn">Clear All — Reset Demo</button></div>
+
+    <h3 style="margin:18px 0 10px">All Registrations</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Registration ID</th><th>Student</th><th>Event</th><th>Seats</th><th>Amount</th><th>Contact</th></tr></thead>
+        <tbody id="adminTbody"></tbody>
+      </table>
+      <div id="adminEmpty" class="empty" style="border:0">No registrations yet. When a student registers, it will appear here.</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:22px" id="adminGrid">
+      <div class="formcard">
+        <h3 style="margin-top:0">Create New Event</h3>
+        <div id="ceError" class="error"></div>
+        <div id="ceSuccess" class="success"></div>
+        <div class="formgrid" style="margin-top:12px">
+          <div><label for="ceTitle">Event Title *</label><input id="ceTitle" placeholder="e.g. Photography Contest"/></div>
+          <div><label for="ceClub">Organizing Club / Department *</label><input id="ceClub" placeholder="e.g. Photography Club"/></div>
+          <div><label for="ceCategory">Category</label><select id="ceCategory"><option>Technical</option><option>Cultural</option><option>Sports</option><option>Workshop</option><option>Seminar</option><option>Fest</option></select></div>
+          <div><label for="ceVenue">Venue *</label><input id="ceVenue" placeholder="e.g. Main Auditorium"/></div>
+          <div><label for="ceDate">Date *</label><input id="ceDate" type="date" value="2026-11-20"/></div>
+          <div><label for="ceTime">Time *</label><input id="ceTime" placeholder="e.g. 10:00 AM"/></div>
+          <div><label for="ceSeats">Total Seats *</label><input id="ceSeats" type="number" min="1" value="100"/></div>
+          <div><label for="ceFee">Entry Fee (₹) — 0 for Free</label><input id="ceFee" type="number" min="0" value="0"/></div>
+          <div style="grid-column:1/-1"><label for="ceDesc">Short Description</label><input id="ceDesc" placeholder="One line about the event"/></div>
+        </div>
+        <button class="btn btn-primary" id="createEventBtn" style="width:100%;margin-top:14px">+ Create Event</button>
+      </div>
+      <div class="formcard">
+        <h3 style="margin-top:0">Manage Events</h3>
+        <p style="color:var(--muted);font-size:14px;margin-top:0">Cancelling an event marks it as Cancelled. Students will see it but cannot register.</p>
+        <div id="manageList" style="display:grid;gap:10px"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="footer"><span>CampusEvents • Browse • Register • Attend</span><span>Free events: ₹0 &nbsp;•&nbsp; Paid events: pay at venue</span></footer>
+
+<!-- REGISTER MODAL -->
+<div class="modal" id="regModal" role="dialog" aria-modal="true">
+  <div class="modalbox">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:start">
+      <div><h3 id="modalTitle" style="margin:0;font-size:22px;line-height:1.2">Register</h3><p id="modalMeta" style="margin:6px 0 0;color:var(--muted);font-size:14px"></p></div>
+      <button class="btn btn-outline" id="closeModalBtn" type="button">✕</button>
+    </div>
+    <div id="regError" class="error" style="margin-top:14px"></div>
+    <div id="regSuccess" class="success" style="margin-top:14px"></div>
+    <div class="formgrid" style="margin-top:14px">
+      <div><label for="regName">Student Name *</label><input id="regName" placeholder="Full name" autocomplete="name"/></div>
+      <div><label for="regUsn">USN / Roll Number *</label><input id="regUsn" placeholder="e.g. 1XX24CS001"/></div>
+      <div><label for="regEmail">Email *</label><input id="regEmail" type="email" placeholder="you@example.com"/></div>
+      <div><label for="regPhone">Phone (10 digits) *</label><input id="regPhone" inputmode="numeric" maxlength="10" placeholder="9876543210"/></div>
+      <div><label for="regSeats">Number of Seats (1–4) *</label><select id="regSeats"><option value="1">1 seat</option><option value="2">2 seats</option><option value="3">3 seats</option><option value="4">4 seats</option></select></div>
+      <div><label>Amount to Pay</label><div id="amountBox" style="padding:12px;border:1px solid var(--line);border-radius:12px;font-weight:800">Free</div></div>
+    </div>
+    <button class="btn btn-primary" id="confirmRegBtn" style="width:100%;margin-top:16px">Confirm Registration</button>
+    <p style="font-size:12.5px;color:var(--muted);text-align:center;margin:10px 0 0">For paid events, pay the amount at the venue. Keep your Registration ID safe.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var SEED_EVENTS=[
+ {id:'EVT01',title:'HackSprint 2026 — 24-Hour Hackathon',club:'Coding Club',category:'Technical',date:'2026-11-12',displayDate:'12 Nov 2026',time:'9:00 AM',venue:'Main Auditorium',desc:'Build, code and pitch a working prototype in 24 hours with your team. Mentors, food and prizes included.',fee:0,totalSeats:200,seatsLeft:64,cancelled:false},
+ {id:'EVT02',title:'Robot Rumble — Line Follower Challenge',club:'Robotics Club',category:'Technical',date:'2026-11-14',displayDate:'14 Nov 2026',time:'10:00 AM',venue:'Innovation Lab, Block B',desc:'Race your bot through twists and turns. Fastest and most accurate robot wins.',fee:150,totalSeats:80,seatsLeft:32,cancelled:false},
+ {id:'EVT03',title:'Folk Dance Fiesta',club:'Cultural Committee',category:'Cultural',date:'2026-11-18',displayDate:'18 Nov 2026',time:'5:00 PM',venue:'Open Amphitheatre',desc:'An evening of folk dances from across India — performances, open stage and food stalls.',fee:0,totalSeats:300,seatsLeft:180,cancelled:false},
+ {id:'EVT04',title:'Inter-College Football Cup — Finals',club:'Sports Council',category:'Sports',date:'2026-11-20',displayDate:'20 Nov 2026',time:'4:00 PM',venue:'College Ground',desc:'Watch the top college teams battle for the cup. Entry for spectators and supporters.',fee:0,totalSeats:400,seatsLeft:210,cancelled:false},
+ {id:'EVT05',title:'AI & the Future — Hands-on Workshop',club:'Department of CSE',category:'Workshop',date:'2026-11-22',displayDate:'22 Nov 2026',time:'10:00 AM',venue:'Seminar Hall A',desc:'A practical workshop on AI tools — prompts, automation and building a small AI project.',fee:200,totalSeats:120,seatsLeft:28,cancelled:false},
+ {id:'EVT06',title:'Poetry Slam Evening',club:'Literary Club',category:'Cultural',date:'2026-11-25',displayDate:'25 Nov 2026',time:'6:00 PM',venue:'Library Courtyard',desc:'Original poems, spoken word and open mic. Perform or just come and listen.',fee:0,totalSeats:100,seatsLeft:47,cancelled:false},
+ {id:'EVT07',title:'Start-up Pitch Day',club:'Entrepreneurship Cell',category:'Seminar',date:'2026-11-28',displayDate:'28 Nov 2026',time:'11:00 AM',venue:'Conference Hall',desc:'Student founders pitch ideas to mentors and alumni. Great for networking and feedback.',fee:0,totalSeats:150,seatsLeft:73,cancelled:false},
+ {id:'EVT08',title:"INNOVATE '26 — Annual Tech Fest",club:'Student Council',category:'Fest',date:'2026-12-02',displayDate:'2 Dec 2026',time:'9:00 AM',venue:'Full Campus',desc:'The biggest fest of the year — tech contests, gaming, exhibitions, music and food street.',fee:299,totalSeats:500,seatsLeft:164,cancelled:false},
+ {id:'EVT09',title:'Photography Walk & Contest',club:'Photography Club',category:'Workshop',date:'2026-12-05',displayDate:'5 Dec 2026',time:'7:00 AM',venue:'Campus Gardens',desc:'Morning photo walk around campus, followed by a themed contest and exhibition.',fee:100,totalSeats:60,seatsLeft:19,cancelled:false},
+ {id:'EVT10',title:'Classical Music Night',club:'Cultural Committee',category:'Cultural',date:'2026-12-08',displayDate:'8 Dec 2026',time:'6:30 PM',venue:'Main Auditorium',desc:'An evening of Carnatic and Hindustani performances by students and guest artists.',fee:0,totalSeats:250,seatsLeft:132,cancelled:false},
+ {id:'EVT11',title:'Badminton Championship',club:'Sports Council',category:'Sports',date:'2026-12-10',displayDate:'10 Dec 2026',time:'8:00 AM',venue:'Indoor Stadium',desc:'Singles and doubles knockouts across categories. Rackets provided if needed.',fee:50,totalSeats:128,seatsLeft:41,cancelled:false},
+ {id:'EVT12',title:'Data Science in Real Life — Seminar',club:'Data Club',category:'Seminar',date:'2026-12-12',displayDate:'12 Dec 2026',time:'2:00 PM',venue:'Seminar Hall B',desc:'How data science is used in jobs, research and everyday products — with live examples.',fee:0,totalSeats:180,seatsLeft:96,cancelled:false}
+];
+var LS_KEY='campusEvents_v1';
+var events=[], registrations=[], currentCategory='All', selectedEventId=null;
+
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify({events:events, registrations:registrations})); }catch(e){} }
+function load(){
+  try{ var raw=localStorage.getItem(LS_KEY); if(raw){ var d=JSON.parse(raw); if(d && d.events && d.events.length){ events=d.events; registrations=d.registrations||[]; return; } } }catch(e){}
+  events=JSON.parse(JSON.stringify(SEED_EVENTS)); registrations=[]; save();
+}
+function fmtDate(iso){ try{ var d=new Date(iso+'T00:00:00'); return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}); }catch(e){ return iso; } }
+function dayMon(iso){ try{ var d=new Date(iso+'T00:00:00'); return {d:d.getDate(), m:d.toLocaleDateString('en-IN',{month:'short'})}; }catch(e){ return {d:'—',m:''}; } }
+function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show')},2800); }
+function showView(v){
+  document.getElementById('view-events').classList.toggle('hidden', v!=='events');
+  document.getElementById('view-my').classList.toggle('hidden', v!=='my');
+  document.getElementById('view-admin').classList.toggle('hidden', v!=='admin');
+  document.getElementById('tabEvents').classList.toggle('active', v==='events');
+  document.getElementById('tabMy').classList.toggle('active', v==='my');
+  document.getElementById('tabAdmin').classList.toggle('active', v==='admin');
+  if(v==='my') renderMy();
+  if(v==='admin') renderAdmin();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function setCategory(btn){ currentCategory=btn.getAttribute('data-cat'); var pills=document.querySelectorAll('#catPills .pill'); for(var i=0;i<pills.length;i++) pills[i].classList.remove('active'); btn.classList.add('active'); renderEvents(); }
+
+function renderStats(){
+  document.getElementById('statEvents').textContent=events.length;
+  document.getElementById('statRegs').textContent=registrations.length;
+  var s=0; for(var i=0;i<registrations.length;i++) s+=Number(registrations[i].seats||0);
+  document.getElementById('statSeats').textContent=s;
+  document.getElementById('myBadge').textContent=registrations.length;
+}
+function renderEvents(){
+  var q=(document.getElementById('searchInput').value||'').trim().toLowerCase();
+  var grid=document.getElementById('eventsGrid'); grid.innerHTML='';
+  var shown=0;
+  events.forEach(function(ev){
+    if(currentCategory!=='All' && ev.category!==currentCategory) return;
+    if(q && (ev.title.toLowerCase().indexOf(q)===-1 && ev.club.toLowerCase().indexOf(q)===-1)) return;
+    shown++;
+    var dm=dayMon(ev.date);
+    var booked=ev.totalSeats-ev.seatsLeft;
+    var pct=ev.totalSeats? Math.round(booked/ev.totalSeats*100):0;
+    var isFull=ev.seatsLeft<=0;
+    var card=document.createElement('article'); card.className='card';
+    var btnHtml='';
+    if(ev.cancelled) btnHtml='<button class="btn btn-primary" disabled>Cancelled</button>';
+    else if(isFull) btnHtml='<button class="btn btn-primary" disabled>House Full</button>';
+    else btnHtml='<button class="btn btn-primary" data-register="'+ev.id+'">Register Now</button>';
+    card.innerHTML=
+      '<div class="card-top"><span class="badge">'+ev.category+'</span><div class="datebox"><b>'+dm.d+'</b><span>'+dm.m+'</span></div></div>'+
+      '<div class="card-body"><h3>'+escapeHtml(ev.title)+'</h3><div class="club">'+escapeHtml(ev.club)+'</div><p class="desc">'+escapeHtml(ev.desc||'')+'</p>'+
+      '<div class="meta"><span>📅 '+escapeHtml(ev.displayDate||fmtDate(ev.date))+' • '+escapeHtml(ev.time)+'</span><span>📍 '+escapeHtml(ev.venue)+'</span></div>'+
+      (ev.cancelled?'<div class="cancelledTag">✕ This event has been cancelled</div>':'')+
+      '<div><div class="progress"><i style="width:'+pct+'%"></i></div><div class="seatsline"><span>'+ev.seatsLeft+' seats left</span><span>'+ev.totalSeats+' total</span></div></div></div>'+
+      '<div class="card-foot"><span class="price">'+(ev.fee===0?'Free':'₹'+ev.fee)+'</span>'+btnHtml+'</div>';
+    var rb=card.querySelector('[data-register]');
+    if(rb) rb.addEventListener('click',function(){ openRegister(rb.getAttribute('data-register')); });
+    grid.appendChild(card);
+  });
+  document.getElementById('noResults').classList.toggle('hidden', shown!==0);
+  renderStats();
+}
+function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}); }
+
+function openRegister(id){
+  selectedEventId=id; regDone=false;
+  document.getElementById('confirmRegBtn').textContent='Confirm Registration';
+  var ev=events.find(function(e){return e.id===id});
+  if(!ev) return;
+  document.getElementById('modalTitle').textContent=ev.title;
+  document.getElementById('modalMeta').textContent=ev.club+' • '+(ev.displayDate||fmtDate(ev.date))+' • '+ev.time+' • '+ev.venue+' • '+ev.seatsLeft+' seats left';
+  document.getElementById('regError').className='error'; document.getElementById('regError').textContent='';
+  document.getElementById('regSuccess').className='success'; document.getElementById('regSuccess').textContent='';
+  document.getElementById('regName').value=''; document.getElementById('regUsn').value=''; document.getElementById('regEmail').value=''; document.getElementById('regPhone').value=''; document.getElementById('regSeats').value='1';
+  updateAmount();
+  document.getElementById('regSeats').onchange=updateAmount;
+  document.getElementById('regModal').classList.add('open');
+}
+function updateAmount(){
+  var ev=events.find(function(e){return e.id===selectedEventId}); if(!ev) return;
+  var seats=Number(document.getElementById('regSeats').value||1);
+  document.getElementById('amountBox').textContent= ev.fee===0 ? 'Free' : '₹'+(ev.fee*seats)+'  (₹'+ev.fee+' × '+seats+')';
+}
+function closeModal(){ document.getElementById('regModal').classList.remove('open'); }
+document.getElementById('regModal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+
+function showRegError(msg){ var b=document.getElementById('regError'); b.textContent=msg; b.classList.add('show'); }
+function submitRegistration(){
+  var ev=events.find(function(e){return e.id===selectedEventId}); if(!ev) return;
+  var name=document.getElementById('regName').value.trim();
+  var usn=document.getElementById('regUsn').value.trim();
+  var email=document.getElementById('regEmail').value.trim();
+  var phone=document.getElementById('regPhone').value.trim();
+  var seats=Number(document.getElementById('regSeats').value);
+  document.getElementById('regError').className='error';
+  if(ev.cancelled) return showRegError('This event has been cancelled. Registration is closed.');
+  if(!name || !usn || !email || !phone) return showRegError('Please fill all fields — name, USN, email and phone are required.');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showRegError('Please enter a valid email address (example: name@example.com).');
+  if(!/^\d{10}$/.test(phone)) return showRegError('Phone number must be exactly 10 digits.');
+  if(seats<1 || seats>4) return showRegError('You can book 1 to 4 seats only.');
+  if(seats>ev.seatsLeft) return showRegError('Only '+ev.seatsLeft+' seat(s) left for this event. Please reduce the number of seats.');
+  var regId='REG'+Date.now().toString().slice(-6);
+  // ensure uniqueness
+  if(registrations.some(function(r){return r.id===regId})) regId='REG'+(Date.now()+Math.floor(Math.random()*900+100));
+  var reg={id:regId, eventId:ev.id, eventTitle:ev.title, date:ev.displayDate||fmtDate(ev.date), venue:ev.venue, time:ev.time, name:name, usn:usn, email:email, phone:phone, seats:seats, fee:ev.fee, amount:ev.fee*seats};
+  registrations.unshift(reg);
+  ev.seatsLeft-=seats;
+  save(); renderEvents(); renderStats();
+  var s=document.getElementById('regSuccess'); s.innerHTML='✅ Registration successful! Your Registration ID is <b>'+regId+'</b>. '+(reg.amount>0?('Amount to pay at venue: ₹'+reg.amount):'Entry is Free.'); s.classList.add('show');
+  regDone=true;
+  document.getElementById('confirmRegBtn').textContent='Registered ✓ — View My Registrations';
+  toast('Registered! ID: '+regId);
+}
+function renderMy(){
+  var list=document.getElementById('myList'); list.innerHTML='';
+  document.getElementById('myEmpty').style.display=registrations.length? 'none':'block';
+  registrations.forEach(function(r){
+    var div=document.createElement('div'); div.className='regcard';
+    div.innerHTML='<div><h3>'+escapeHtml(r.eventTitle)+'</h3><div style="color:var(--muted);font-size:14px">'+escapeHtml(r.date)+' • '+escapeHtml(r.venue)+' • '+r.seats+' seat(s) • '+(r.amount>0?('₹'+r.amount+' to pay'):'Free')+'</div><div style="margin-top:8px"><span class="pillid">'+r.id+'</span> &nbsp; '+escapeHtml(r.name)+' • '+escapeHtml(r.usn)+'</div></div><div><button class="btn btn-danger" data-cancel-reg="'+r.id+'">Cancel Registration</button></div>';
+    var cb=div.querySelector('[data-cancel-reg]');
+    if(cb) cb.addEventListener('click',function(){ cancelRegistration(cb.getAttribute('data-cancel-reg')); });
+    list.appendChild(div);
+  });
+  renderStats();
+}
+function cancelRegistration(regId){
+  var idx=registrations.findIndex(function(r){return r.id===regId}); if(idx===-1) return;
+  var r=registrations[idx];
+  var ev=events.find(function(e){return e.id===r.eventId}); if(ev) ev.seatsLeft=Math.min(ev.totalSeats, ev.seatsLeft + r.seats);
+  registrations.splice(idx,1); save(); renderMy(); renderEvents(); if(!document.getElementById('view-admin').classList.contains('hidden')) renderAdmin();
+  toast('Registration '+regId+' cancelled — seats freed.');
+}
+function renderAdmin(){
+  var tbody=document.getElementById('adminTbody'); tbody.innerHTML='';
+  document.getElementById('adminEmpty').style.display=registrations.length? 'none':'block';
+  registrations.forEach(function(r){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><b>'+r.id+'</b></td><td>'+escapeHtml(r.name)+'<br><span style="color:var(--muted)">'+escapeHtml(r.usn)+'</span></td><td>'+escapeHtml(r.eventTitle)+'</td><td>'+r.seats+'</td><td>'+(r.amount>0?'₹'+r.amount:'Free')+'</td><td>'+escapeHtml(r.email)+'<br>'+escapeHtml(r.phone)+'</td>';
+    tbody.appendChild(tr);
+  });
+  var ml=document.getElementById('manageList'); ml.innerHTML='';
+  events.forEach(function(ev){
+    var row=document.createElement('div'); row.style.cssText='display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px';
+    row.innerHTML='<div><b style="font-size:14px">'+escapeHtml(ev.title)+'</b><br><span style="font-size:12.5px;color:var(--muted)">'+ev.seatsLeft+'/'+ev.totalSeats+' seats left '+(ev.cancelled?'• <span style="color:var(--red);font-weight:700">Cancelled</span>':'')+'</span></div>'+(ev.cancelled?'<span style="font-weight:700;color:var(--muted);font-size:13px">Cancelled</span>':'<button class="btn btn-danger" style="padding:8px 12px" data-cancel-event="'+ev.id+'">Cancel Event</button>');
+    var eb=row.querySelector('[data-cancel-event]');
+    if(eb) eb.addEventListener('click',function(){ cancelEvent(eb.getAttribute('data-cancel-event')); });
+    ml.appendChild(row);
+  });
+  renderStats();
+}
+function cancelEvent(id){
+  var ev=events.find(function(e){return e.id===id}); if(!ev) return;
+  ev.cancelled=true; save(); renderAdmin(); renderEvents(); toast('Event cancelled: '+ev.title);
+}
+function addNewEvent(){
+  var err=document.getElementById('ceError'); var suc=document.getElementById('ceSuccess'); err.className='error'; suc.className='success';
+  var title=document.getElementById('ceTitle').value.trim();
+  var club=document.getElementById('ceClub').value.trim();
+  var cat=document.getElementById('ceCategory').value;
+  var venue=document.getElementById('ceVenue').value.trim();
+  var date=document.getElementById('ceDate').value;
+  var time=document.getElementById('ceTime').value.trim();
+  var seats=Number(document.getElementById('ceSeats').value);
+  var fee=Number(document.getElementById('ceFee').value||0);
+  var desc=document.getElementById('ceDesc').value.trim()||'A new college event — all students are welcome to join.';
+  if(!title||!club||!venue||!date||!time||!seats||seats<1){ err.textContent='Please fill Title, Club, Venue, Date, Time and a valid Total Seats.'; err.classList.add('show'); return; }
+  if(fee<0){ err.textContent='Fee cannot be negative. Use 0 for a free event.'; err.classList.add('show'); return; }
+  var id='EVT'+Date.now().toString().slice(-5);
+  events.unshift({id:id,title:title,club:club,category:cat,date:date,displayDate:fmtDate(date),time:time,venue:venue,desc:desc,fee:fee,totalSeats:seats,seatsLeft:seats,cancelled:false});
+  save(); renderEvents(); renderAdmin();
+  suc.textContent='Event created successfully! It is now visible to students in the Events list.'; suc.classList.add('show');
+  document.getElementById('ceTitle').value=''; document.getElementById('ceClub').value=''; document.getElementById('ceVenue').value=''; document.getElementById('ceDesc').value='';
+  toast('New event added: '+title);
+}
+function resetAllData(){
+  try{ localStorage.removeItem(LS_KEY); }catch(e){}
+  events=JSON.parse(JSON.stringify(SEED_EVENTS)); registrations=[]; save(); renderEvents(); renderAdmin(); renderMy(); toast('Demo reset — all data cleared to original events.');
+}
+/* All controls are wired here with addEventListener — no inline onclick/oninput
+   attributes anywhere, so the buttons keep working in embedded webviews whose
+   content-security policy blocks inline event-handler attributes. */
+var regDone=false;
+function onConfirmReg(){
+  if(regDone){ regDone=false; closeModal(); showView('my'); document.getElementById('confirmRegBtn').textContent='Confirm Registration'; return; }
+  submitRegistration();
+}
+function bindUI(){
+  var dv=document.querySelectorAll('[data-view]');
+  for(var i=0;i<dv.length;i++){ (function(b){ b.addEventListener('click',function(){ showView(b.getAttribute('data-view')); }); })(dv[i]); }
+  var sb=document.getElementById('searchBtn'); if(sb) sb.addEventListener('click',function(){ document.getElementById('searchInput').focus(); });
+  var si=document.getElementById('searchInput'); if(si) si.addEventListener('input',renderEvents);
+  var pills=document.querySelectorAll('#catPills .pill');
+  for(var k=0;k<pills.length;k++){ (function(p){ p.addEventListener('click',function(){ setCategory(p); }); })(pills[k]); }
+  var rst=document.getElementById('clearBtn'); if(rst) rst.addEventListener('click',resetAllData);
+  var ce=document.getElementById('createEventBtn'); if(ce) ce.addEventListener('click',addNewEvent);
+  var cm=document.getElementById('closeModalBtn'); if(cm) cm.addEventListener('click',closeModal);
+  var cr=document.getElementById('confirmRegBtn'); if(cr) cr.addEventListener('click',onConfirmReg);
+}
+bindUI();
+load(); renderEvents();
+</script>
+</body>
+</html>
